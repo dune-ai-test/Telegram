@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rss_feeds"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:id="@+id/rss_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <EditText
+        android:id="@+id/new_feed_url"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="@string/add_rss_hint"
+        android:inputType="textUri"
+        android:padding="8dp"
+        android:background="@drawable/search_bg"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/add_feed_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="@string/add"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="end" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ddd"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about_text"
+        android:textSize="12sp"
+        android:textColor="#666" />
+
+</LinearLayout>

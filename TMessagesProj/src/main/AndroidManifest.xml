@@ -114,7 +114,7 @@
         <!-- usesCleartextTraffic for browser supporting opening http:// links -->
 
         <activity-alias
-            android:enabled="true"
+            android:enabled="false"
             android:name="org.telegram.messenger.DefaultIcon"
             android:targetActivity="org.telegram.ui.LaunchActivity"
             android:exported="true">
@@ -680,6 +680,21 @@
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="org.telegram.messenger.chromecast.ChromecastOptionsProvider" />
+
+        <!-- NewsReader Decoy Launcher -->
+        <activity
+            android:name="org.telegram.decoy.DecoyActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+        </activity>
 
     </application>
 

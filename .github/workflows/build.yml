@@ -13,10 +13,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      attestations: write
-      artifact-metadata: write
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_HARDLINK: "true"
@@ -52,15 +48,6 @@ jobs:
           echo 'org.gradle.jvmargs=-Xmx8192m -Dfile.encoding=UTF-8 -XX:+UseParallelGC' >> ~/.gradle/gradle.properties
           echo 'android.native.buildOutput=verbose' >> ~/.gradle/gradle.properties
 
-      - name: Configure Signing
-        run: |
-          echo "storeFile=${{ github.workspace }}/keystore.jks" >> local.properties
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> local.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> local.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> local.properties
-          
-          echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > keystore.jks
-
       - name: Configure Secrets
         run: |
           echo "apiId=${{ secrets.API_ID }}" >> local.properties
@@ -69,32 +56,9 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleAfatDebug
 
-      - name: Build release APK
-        run: |
-          ./gradlew assembleRelease
-          ./gradlew bundlePlay
-          ./gradlew sentryUploadSourceBundlePlay
-
-      - name: Attest
-        uses: actions/attest@v4
-        with:
-          subject-path: '${{ github.workspace }}/TMessagesProj_App/build/outputs'
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: outputs
-          path: TMessagesProj_App/build/outputs
-
       - name: Upload debug APK
         uses: actions/upload-artifact@v7
         with:
           name: debug-apk
           path: TMessagesProj_App/build/outputs/apk/afat/debug/*.apk
-          archive: false
-
-      - name: Upload arm64-v8a release APK
-        uses: actions/upload-artifact@v7
-        with:
-          path: TMessagesProj_App/build/outputs/apk/release/*-arm64-v8a.apk
           archive: false

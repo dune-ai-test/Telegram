@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/feed_url_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="12sp"
+        android:textColor="#333"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <ImageButton
+        android:id="@+id/feed_remove_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Remove" />
+
+</LinearLayout>
