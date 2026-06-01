@@ -247,7 +247,8 @@ def getProps(String propName) {
         return "";
     }
 }
-apply plugin: 'com.google.gms.google-services'
+// Google Services plugin is applied only in the app module (TMessagesProj_App)
+// apply plugin: 'com.google.gms.google-services'
 
 task checkVisibility {
     doFirst {
