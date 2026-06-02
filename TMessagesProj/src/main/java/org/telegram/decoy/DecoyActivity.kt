@@ -178,7 +178,7 @@ class DecoyActivity : AppCompatActivity() {
             for (feed in feeds) {
                 val row = layoutInflater.inflate(R.layout.item_rss_url, rssList, false)
                 (row.findViewById(R.id.feed_url_text) as TextView).text = feed
-                row.findViewById(R.id.feed_remove_btn).setOnClickListener {
+                row.findViewById<View>(R.id.feed_remove_btn).setOnClickListener {
                     RssSyncWorker.removeFeedUrl(this, feed)
                     showSettings()
                 }
