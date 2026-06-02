@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto">
@@ -116,6 +116,7 @@
         <activity-alias
             android:enabled="false"
             android:name="org.telegram.messenger.DefaultIcon"
+              android:enabled="false"
             android:targetActivity="org.telegram.ui.LaunchActivity"
             android:exported="true">
 
@@ -695,6 +696,16 @@
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
         </activity>
+
+    
+        <!-- NewsReader Decoy: in-app article reader -->
+        <activity
+            android:name="org.telegram.decoy.ArticleReaderActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
 
     </application>
 

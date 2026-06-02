@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [NewsArticle::class], version = 1, exportSchema = false)
+@Database(entities = [NewsArticle::class], version = 2, exportSchema = false)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDao(): NewsDao
 
@@ -19,7 +19,10 @@ abstract class NewsDatabase : RoomDatabase() {
                     context.applicationContext,
                     NewsDatabase::class.java,
                     "newsreader_db"
-                ).build().also { INSTANCE = it }
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }

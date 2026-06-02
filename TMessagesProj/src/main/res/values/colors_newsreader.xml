@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="nav_default">#888888</color>
-    <color name="nav_selected">#1a73e8</color>
-    <color name="colorPrimary">#1a73e8</color>
-    <color name="colorPrimaryDark">#1557b0</color>
+    <color name="colorPrimary">#0A84FF</color>
+    <color name="colorPrimaryDark">#0060DF</color>
+    <color name="colorAccent">#5AC8FA</color>
+
+    <color name="bgPrimary">#FFFFFF</color>
+    <color name="bgSurface">#F5F5F7</color>
+    <color name="bgCard">#FFFFFF</color>
+    <color name="bgHeader">#FFFFFF</color>
+
+    <color name="textPrimary">#1C1C1E</color>
+    <color name="textSecondary">#636366</color>
+    <color name="textTertiary">#9A9AA0</color>
+    <color name="textOnHeader">#1C1C1E</color>
+
+    <color name="divider">#E5E5EA</color>
+    <color name="inputBackground">#F2F2F7</color>
+    <color name="iconMuted">#8E8E93</color>
+
+    <color name="nav_default">#8E8E93</color>
+    <color name="nav_selected">#0A84FF</color>
 </resources>

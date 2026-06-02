@@ -23,7 +23,7 @@ object DecoyReturnHelper {
             try {
                 val intent = Intent()
                 intent.setClassName(
-                    "org.newsrss.reader",
+                    context.applicationContext.packageName,
                     "org.telegram.decoy.DecoyActivity"
                 )
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP

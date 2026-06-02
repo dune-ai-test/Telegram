@@ -34,8 +34,8 @@ object RssFetcher {
             }
         }
 
-        allArticles.sortByDescending { it.pubDate }
-        return FetchResult(allArticles.take(10), now)
+        allArticles.sortByDescending { it.fetchedAt }
+        return FetchResult(allArticles.take(30), now)
     }
 
     private fun downloadXml(urlString: String): String {
@@ -50,16 +50,19 @@ object RssFetcher {
     private fun parseRss(xml: String, sourceUrl: String): List<NewsArticle> {
         val articles = mutableListOf<NewsArticle>()
         val factory = XmlPullParserFactory.newInstance()
+        factory.isNamespaceAware = false
         val parser = factory.newPullParser()
         parser.setInput(StringReader(xml))
 
         var title = ""
         var description = ""
+        var contentEncoded = ""
         var link = ""
         var pubDate = ""
         var imageUrl: String? = null
         var inItem = false
         var currentTag = ""
+        var inContentEncoded = false
 
         var eventType = parser.eventType
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -70,39 +73,76 @@ object RssFetcher {
                         inItem = true
                         title = ""
                         description = ""
+                        contentEncoded = ""
                         link = ""
                         pubDate = ""
                         imageUrl = null
                     }
                     if (inItem) {
                         currentTag = tag
+                        if (tag.equals("content:encoded", true) ||
+                            tag.equals("encoded", true)) {
+                            inContentEncoded = true
+                        }
+                        if (tag.equals("media:content", true) ||
+                            tag.equals("media:thumbnail", true) ||
+                            tag.equals("enclosure", true)) {
+                            val url = parser.getAttributeValue(null, "url")
+                            if (!url.isNullOrBlank() && imageUrl == null) {
+                                imageUrl = url
+                            }
+                        }
+                        if (tag.equals("image", true) && imageUrl == null) {
+                            // may be parsed in TEXT
+                        }
                     }
                 }
                 XmlPullParser.TEXT -> {
                     if (inItem) {
                         val text = parser.text?.trim() ?: ""
                         when {
+                            inContentEncoded -> contentEncoded += text
                             currentTag.equals("title", true) && title.isEmpty() -> title = text
                             currentTag.equals("description", true) && description.isEmpty() -> {
-                                description = text.replace(Regex("<[^>]*>"), "").trim()
-                                if (description.length > 200) description = description.take(200) + "..."
+                                description = text
                             }
                             currentTag.equals("link", true) && link.isEmpty() -> link = text
                             currentTag.equals("pubDate", true) && pubDate.isEmpty() -> pubDate = text
                             currentTag.equals("updated", true) && pubDate.isEmpty() -> pubDate = text
+                            currentTag.equals("url", true) && currentTag == "image" && imageUrl == null -> {
+                                if (text.isNotBlank()) imageUrl = text
+                            }
                         }
                     }
                 }
                 XmlPullParser.END_TAG -> {
+                    if (inContentEncoded && (tag.equals("content:encoded", true) ||
+                                tag.equals("encoded", true))) {
+                        inContentEncoded = false
+                    }
                     if (tag.equals("item", true) || tag.equals("entry", true)) {
                         if (title.isNotBlank()) {
+                            val finalLink = if (link.isBlank()) {
+                                title.hashCode().toString()
+                            } else link
+                            val cleanDescription = if (description.isNotBlank()) {
+                                stripHtml(description).let {
+                                    if (it.length > 400) it.take(400) + "..." else it
+                                }
+                            } else ""
+                            val finalContent = if (contentEncoded.isNotBlank()) {
+                                contentEncoded
+                            } else if (description.isNotBlank()) {
+                                description
+                            } else null
                             articles.add(NewsArticle(
-                                link = link.ifBlank { title.hashCode().toString() },
+                                link = finalLink,
                                 title = title,
-                                description = description,
+                                description = cleanDescription,
                                 source = extractSourceName(sourceUrl),
                                 pubDate = pubDate.ifBlank { System.currentTimeMillis().toString() },
-                                imageUrl = imageUrl
+                                imageUrl = imageUrl,
+                                content = finalContent
                             ))
                         }
                         inItem = false
@@ -113,6 +153,23 @@ object RssFetcher {
             eventType = parser.next()
         }
         return articles
+    }
+
+    fun stripHtml(html: String): String {
+        if (html.isBlank()) return ""
+        var s = html
+        s = s.replace(Regex("<script[^>]*>.*?</script>", RegexOption.DOT_MATCHES_ALL), " ")
+        s = s.replace(Regex("<style[^>]*>.*?</style>", RegexOption.DOT_MATCHES_ALL), " ")
+        s = s.replace(Regex("<[^>]+>"), " ")
+        s = s.replace(Regex("&nbsp;"), " ")
+        s = s.replace(Regex("&amp;"), "&")
+        s = s.replace(Regex("&lt;"), "<")
+        s = s.replace(Regex("&gt;"), ">")
+        s = s.replace(Regex("&quot;"), "\"")
+        s = s.replace(Regex("&#39;"), "'")
+        s = s.replace(Regex("&apos;"), "'")
+        s = s.replace(Regex("\\s+"), " ")
+        return s.trim()
     }
 
     private fun extractSourceName(url: String): String {

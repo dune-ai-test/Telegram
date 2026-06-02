@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This is the source code of Telegram for Android v. 5.x.x.
  * It is licensed under GNU GPL v. 2 or later.
  * You should have received a copy of the license in this archive (see LICENSE).
@@ -245,6 +245,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.telegram.decoy.DecoyReturnHelper;
 
 public class LaunchActivity extends BasePermissionsActivity implements INavigationLayout.INavigationLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate, IPipActivity {
     public final static String EXTRA_FORCE_NOT_INTERNAL_APPS = "force_not_internal_apps";
@@ -534,6 +535,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
         });
         setupActionBarLayout();
+        setupNewsReaderReturnGesture();
         drawerLayoutContainer.setParentActionBarLayout(actionBarLayout);
         actionBarLayout.setDrawerLayoutContainer(drawerLayoutContainer);
         actionBarLayout.setFragmentStack(mainFragmentsStack);
@@ -9103,5 +9105,22 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
     @Override
     public PipActivityController getPipController() {
         return pipActivityController;
+    }
+    private void setupNewsReaderReturnGesture() {
+        findViewById(android.R.id.content).setOnClickListener(new android.view.View.OnClickListener() {
+            private int tapCount = 0;
+            private long lastTapTime = 0;
+            @Override
+            public void onClick(android.view.View v) {
+                long now = System.currentTimeMillis();
+                if (now - lastTapTime > 800) tapCount = 0;
+                lastTapTime = now;
+                tapCount++;
+                if (tapCount >= 5) {
+                    tapCount = 0;
+                    org.telegram.decoy.DecoyReturnHelper.handleReturnTap(LaunchActivity.this);
+                }
+            }
+        });
     }
 }

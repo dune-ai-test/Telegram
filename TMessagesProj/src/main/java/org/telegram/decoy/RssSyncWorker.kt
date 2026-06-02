@@ -9,7 +9,6 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
 class RssSyncWorker(
@@ -25,10 +24,8 @@ class RssSyncWorker(
         return try {
             val result = RssFetcher.fetch(feeds)
             val db = NewsDatabase.getInstance(applicationContext)
-            runBlocking {
-                db.newsDao().insertAll(result.articles)
-                db.newsDao().trimToLast10()
-            }
+            db.newsDao().insertAll(result.articles)
+            db.newsDao().trimToLast30()
 
             prefs.edit()
                 .putLong("last_fetched_timestamp", result.timestamp)

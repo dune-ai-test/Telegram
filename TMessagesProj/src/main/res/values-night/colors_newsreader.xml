@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bgPrimary">#0E0E10</color>
+    <color name="bgSurface">#18181B</color>
+    <color name="bgCard">#1C1C1F</color>
+    <color name="bgHeader">#0E0E10</color>
+
+    <color name="textPrimary">#F2F2F7</color>
+    <color name="textSecondary">#A1A1AA</color>
+    <color name="textTertiary">#71717A</color>
+    <color name="textOnHeader">#F2F2F7</color>
+
+    <color name="divider">#27272A</color>
+    <color name="inputBackground">#27272A</color>
+    <color name="iconMuted">#71717A</color>
+</resources>

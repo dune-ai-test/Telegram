@@ -13,8 +13,8 @@ interface NewsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(articles: List<NewsArticle>)
 
-    @Query("DELETE FROM news_articles WHERE link NOT IN (SELECT link FROM news_articles ORDER BY fetchedAt DESC LIMIT 10)")
-    suspend fun trimToLast10()
+    @Query("DELETE FROM news_articles WHERE link NOT IN (SELECT link FROM news_articles ORDER BY fetchedAt DESC LIMIT 30)")
+    suspend fun trimToLast30()
 
     @Query("SELECT COUNT(*) FROM news_articles")
     suspend fun count(): Int

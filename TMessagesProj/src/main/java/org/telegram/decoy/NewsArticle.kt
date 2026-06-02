@@ -11,5 +11,6 @@ data class NewsArticle(
     val source: String,
     val pubDate: String,
     val imageUrl: String?,
+    val content: String? = null,
     val fetchedAt: Long = System.currentTimeMillis()
 )

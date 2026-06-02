@@ -1,70 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/settings"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/rss_feeds"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+    android:fillViewport="true"
+    android:background="@color/bgPrimary">
 
     <LinearLayout
-        android:id="@+id/rss_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <EditText
-        android:id="@+id/new_feed_url"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:hint="@string/add_rss_hint"
-        android:inputType="textUri"
-        android:padding="8dp"
-        android:background="@drawable/search_bg"
-        android:layout_marginTop="8dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/textPrimary"
+            android:letterSpacing="-0.02"
+            android:layout_marginBottom="20dp" />
 
-    <Button
-        android:id="@+id/add_feed_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="@string/add"
-        android:layout_marginTop="8dp"
-        android:layout_gravity="end" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rss_feeds"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:textColor="@color/textTertiary"
+            android:letterSpacing="0.05"
+            android:layout_marginBottom="10dp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ddd"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp" />
+        <LinearLayout
+            android:id="@+id/rss_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/news_item_bg"
+            android:padding="4dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/about"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/about_text"
-        android:textSize="12sp"
-        android:textColor="#666" />
+            <EditText
+                android:id="@+id/new_feed_url"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:hint="@string/add_rss_hint"
+                android:inputType="textUri"
+                android:textColor="@color/textPrimary"
+                android:textColorHint="@color/textTertiary"
+                android:paddingHorizontal="14dp"
+                android:background="@drawable/search_bg" />
 
-</LinearLayout>
+            <Button
+                android:id="@+id/add_feed_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="@string/add"
+                android:textColor="@android:color/white"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_marginStart="8dp"
+                android:paddingHorizontal="20dp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:textColor="@color/textTertiary"
+            android:letterSpacing="0.05"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_text"
+            android:textSize="14sp"
+            android:textColor="@color/textSecondary"
+            android:lineSpacingMultiplier="1.3" />
+
+    </LinearLayout>
+
+</ScrollView>

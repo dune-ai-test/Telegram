@@ -3,21 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/bgPrimary">
 
     <LinearLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/bgHeader"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
         android:clickable="true"
         android:focusable="true">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:src="@drawable/ic_rss"
             android:contentDescription="Logo"
             android:layout_marginEnd="12dp" />
@@ -28,49 +29,93 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="@color/textOnHeader"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:letterSpacing="-0.01" />
+
+        <ImageButton
+            android:id="@+id/refresh_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_refresh"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Refresh"
+            android:scaleType="centerInside"
+            android:padding="8dp" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
 
     <EditText
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="44dp"
         android:hint="@string/search_hint_normal"
         android:inputType="text"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textTertiary"
         android:paddingHorizontal="16dp"
         android:background="@drawable/search_bg"
-        android:layout_margin="8dp" />
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp" />
 
     <FrameLayout
         android:id="@+id/content_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_marginTop="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/news_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:padding="8dp" />
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="12dp" />
 
-        <TextView
-            android:id="@+id/empty_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/no_news"
-            android:textSize="16sp"
-            android:textColor="#999999"
-            android:visibility="gone" />
+        <LinearLayout
+            android:id="@+id/empty_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_news"
+                android:alpha="0.4"
+                android:contentDescription="No news" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_news"
+                android:textSize="15sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tap_refresh"
+                android:textSize="13sp"
+                android:textColor="@color/textTertiary"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:visibility="gone" />
 
@@ -80,18 +125,26 @@
         android:id="@+id/timestamp_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="6dp"
         android:gravity="center"
         android:textSize="11sp"
-        android:textColor="#888888"
+        android:textColor="@color/textTertiary"
         android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/bgHeader"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/nav_color"
-        app:itemTextColor="@color/nav_color" />
+        app:itemTextColor="@color/nav_color"
+        app:elevation="0dp" />
 
 </LinearLayout>
