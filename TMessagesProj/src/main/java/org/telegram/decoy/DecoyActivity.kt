@@ -1,5 +1,6 @@
 package org.telegram.decoy
 
+import org.telegram.messenger.R
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -161,7 +162,7 @@ class DecoyActivity : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.fragment_settings, contentArea, false)
         contentArea.addView(view)
 
-        val rssList = view.findViewById<LinearLayout>(R.id.rss_list)
+        val rssList = view.findViewById(R.id.rss_list) as LinearLayout
         rssList.removeAllViews()
 
         val feeds = RssSyncWorker.getFeedUrls(this)
@@ -176,8 +177,8 @@ class DecoyActivity : AppCompatActivity() {
         } else {
             for (feed in feeds) {
                 val row = layoutInflater.inflate(R.layout.item_rss_url, rssList, false)
-                row.findViewById<TextView>(R.id.feed_url_text).text = feed
-                row.findViewById<View>(R.id.feed_remove_btn).setOnClickListener {
+                (row.findViewById(R.id.feed_url_text) as TextView).text = feed
+                row.findViewById(R.id.feed_remove_btn).setOnClickListener {
                     RssSyncWorker.removeFeedUrl(this, feed)
                     showSettings()
                 }
@@ -185,9 +186,9 @@ class DecoyActivity : AppCompatActivity() {
             }
         }
 
-        val addBtn = view.findViewById<Button>(R.id.add_feed_btn)
+        val addBtn = view.findViewById(R.id.add_feed_btn) as Button
         addBtn.setOnClickListener {
-            val url = view.findViewById<EditText>(R.id.new_feed_url).text.toString().trim()
+            val url = (view.findViewById(R.id.new_feed_url) as EditText).text.toString().trim()
             if (url.isNotBlank()) {
                 RssSyncWorker.addFeedUrl(this, url)
                 showSettings()

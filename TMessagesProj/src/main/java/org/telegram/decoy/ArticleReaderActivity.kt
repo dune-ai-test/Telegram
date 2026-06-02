@@ -1,5 +1,6 @@
 package org.telegram.decoy
 
+import org.telegram.messenger.R
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
