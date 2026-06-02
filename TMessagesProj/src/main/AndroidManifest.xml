@@ -116,7 +116,6 @@
         <activity-alias
             android:enabled="false"
             android:name="org.telegram.messenger.DefaultIcon"
-              android:enabled="false"
             android:targetActivity="org.telegram.ui.LaunchActivity"
             android:exported="true">
 
