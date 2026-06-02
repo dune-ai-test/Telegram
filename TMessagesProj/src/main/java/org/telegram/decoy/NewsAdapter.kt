@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import org.telegram.messenger.R
 
 class NewsAdapter(
     private var articles: List<NewsArticle> = emptyList()
