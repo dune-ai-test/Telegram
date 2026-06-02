@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="13sp"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/newsreader_textPrimary"
         android:maxLines="2"
         android:ellipsize="middle" />
 
@@ -24,7 +24,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Remove"
         android:padding="6dp"
-        app:tint="@color/iconMuted"
+        app:tint="@color/newsreader_iconMuted"
         xmlns:app="http://schemas.android.com/apk/res-auto" />
 
 </LinearLayout>

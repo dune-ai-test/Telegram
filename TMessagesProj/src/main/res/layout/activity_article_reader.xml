@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bgPrimary">
+    android:background="@color/newsreader_bgPrimary">
 
     <LinearLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/bgHeader"
+        android:background="@color/newsreader_bgHeader"
         android:gravity="center_vertical"
         android:paddingHorizontal="8dp">
 
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/textOnHeader"
+            android:textColor="@color/newsreader_textOnHeader"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textAllCaps="true"
@@ -42,7 +42,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider" />
+        android:background="@color/newsreader_divider" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:scaleType="centerCrop"
-                android:background="@color/bgSurface"
+                android:background="@color/newsreader_bgSurface"
                 android:visibility="gone" />
 
             <TextView
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="26sp"
                 android:textStyle="bold"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/newsreader_textPrimary"
                 android:lineSpacingMultiplier="1.15"
                 android:paddingHorizontal="20dp"
                 android:paddingTop="20dp" />
@@ -93,7 +93,7 @@
                     android:textStyle="bold"
                     android:textAllCaps="true"
                     android:letterSpacing="0.05"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/newsreader_colorPrimary" />
 
                 <View
                     android:layout_width="0dp"
@@ -105,14 +105,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/textTertiary" />
+                    android:textColor="@color/newsreader_textTertiary" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/divider"
+                android:background="@color/newsreader_divider"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="12dp" />
 
@@ -121,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/newsreader_textPrimary"
                 android:lineSpacingMultiplier="1.55"
                 android:paddingHorizontal="20dp"
                 android:textIsSelectable="true" />
@@ -131,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textColor="@color/textTertiary"
+                android:textColor="@color/newsreader_textTertiary"
                 android:paddingHorizontal="20dp"
                 android:paddingTop="24dp"
                 android:textStyle="italic" />

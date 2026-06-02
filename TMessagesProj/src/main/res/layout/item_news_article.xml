@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:scaleType="centerCrop"
-        android:background="@color/bgSurface"
+        android:background="@color/newsreader_bgSurface"
         android:visibility="gone"
         android:layout_marginBottom="12dp"
         android:clipToOutline="true" />
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:textSize="17sp"
         android:textStyle="bold"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/newsreader_textPrimary"
         android:lineSpacingMultiplier="1.15"
         android:maxLines="3"
         android:ellipsize="end" />
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="13sp"
-        android:textColor="@color/textSecondary"
+        android:textColor="@color/newsreader_textSecondary"
         android:lineSpacingMultiplier="1.3"
         android:maxLines="3"
         android:ellipsize="end"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:textSize="11sp"
             android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/newsreader_colorPrimary"
             android:textAllCaps="true"
             android:letterSpacing="0.05" />
 
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="11sp"
-            android:textColor="@color/textTertiary" />
+            android:textColor="@color/newsreader_textTertiary" />
 
     </LinearLayout>
 

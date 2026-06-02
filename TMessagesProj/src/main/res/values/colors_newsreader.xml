@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0A84FF</color>
-    <color name="colorPrimaryDark">#0060DF</color>
-    <color name="colorAccent">#5AC8FA</color>
+    <color name="newsreader_colorPrimary">#0A84FF</color>
+    <color name="newsreader_colorPrimaryDark">#0060DF</color>
+    <color name="newsreader_colorAccent">#5AC8FA</color>
 
-    <color name="bgPrimary">#FFFFFF</color>
-    <color name="bgSurface">#F5F5F7</color>
-    <color name="bgCard">#FFFFFF</color>
-    <color name="bgHeader">#FFFFFF</color>
+    <color name="newsreader_bgPrimary">#FFFFFF</color>
+    <color name="newsreader_bgSurface">#F5F5F7</color>
+    <color name="newsreader_bgCard">#FFFFFF</color>
+    <color name="newsreader_bgHeader">#FFFFFF</color>
 
-    <color name="textPrimary">#1C1C1E</color>
-    <color name="textSecondary">#636366</color>
-    <color name="textTertiary">#9A9AA0</color>
-    <color name="textOnHeader">#1C1C1E</color>
+    <color name="newsreader_textPrimary">#1C1C1E</color>
+    <color name="newsreader_textSecondary">#636366</color>
+    <color name="newsreader_textTertiary">#9A9AA0</color>
+    <color name="newsreader_textOnHeader">#1C1C1E</color>
 
-    <color name="divider">#E5E5EA</color>
-    <color name="inputBackground">#F2F2F7</color>
-    <color name="iconMuted">#8E8E93</color>
+    <color name="newsreader_divider">#E5E5EA</color>
+    <color name="newsreader_inputBackground">#F2F2F7</color>
+    <color name="newsreader_iconMuted">#8E8E93</color>
 
-    <color name="nav_default">#8E8E93</color>
-    <color name="nav_selected">#0A84FF</color>
+    <color name="newsreader_nav_default">#8E8E93</color>
+    <color name="newsreader_nav_selected">#0A84FF</color>
 </resources>

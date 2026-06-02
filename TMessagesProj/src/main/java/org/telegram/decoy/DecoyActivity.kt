@@ -168,7 +168,7 @@ class DecoyActivity : AppCompatActivity() {
         if (feeds.isEmpty()) {
             val tv = TextView(this)
             tv.text = "No feeds configured"
-            tv.setTextColor(ContextCompat.getColor(this, R.color.textTertiary))
+            tv.setTextColor(ContextCompat.getColor(this, R.color.newsreader_textTertiary))
             tv.textSize = 13f
             val pad = (12 * resources.displayMetrics.density).toInt()
             tv.setPadding(pad, pad, pad, pad)
