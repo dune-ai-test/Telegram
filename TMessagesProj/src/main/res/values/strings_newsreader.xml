@@ -3,6 +3,7 @@
     <string name="app_name">NewsReader</string>
     <string name="search_hint_normal">Search articles...</string>
     <string name="search_hint_unlock">Search articles....</string>
+    <string name="search_hint_locked">Search articles.....</string>
     <string name="no_news">No articles yet</string>
     <string name="tap_refresh">Tap refresh to fetch the latest</string>
     <string name="refreshing">Refreshing...</string>

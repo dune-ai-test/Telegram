@@ -31,6 +31,7 @@ class DecoyActivity : AppCompatActivity() {
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var isFetching = false
+    private var allArticles: List<NewsArticle> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +67,9 @@ class DecoyActivity : AppCompatActivity() {
         val titleView = findViewById<TextView>(R.id.app_title)
         titleView.setOnClickListener {
             val activated = UnlockValidator.handleTap()
-            searchBar.hint = if (activated) {
+            searchBar.hint = if (UnlockValidator.isLocked(this)) {
+                getString(R.string.search_hint_locked)
+            } else if (activated) {
                 getString(R.string.search_hint_unlock)
             } else {
                 getString(R.string.search_hint_normal)
@@ -77,17 +80,47 @@ class DecoyActivity : AppCompatActivity() {
     private fun setupSearch() {
         searchBar.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (!UnlockValidator.unlockModeActive) return
-                val input = s?.toString() ?: return
-                if (input.length < 3) return
+                val input = s?.toString() ?: ""
 
-                if (UnlockValidator.validate(this@DecoyActivity, input)) {
-                    unlockTelegram()
+                if (UnlockValidator.unlockModeActive) {
+                    if (input.length >= 3 && validateUnlock(input)) {
+                        unlockTelegram()
+                    }
+                } else {
+                    filterArticles(input)
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+    }
+
+    private fun validateUnlock(input: String): Boolean {
+        val first = allArticles.firstOrNull()
+        val title = first?.title ?: ""
+        val source = first?.source ?: ""
+        return UnlockValidator.validate(this, input, title, source)
+    }
+
+    private fun filterArticles(query: String) {
+        val filtered = if (query.isBlank()) {
+            allArticles
+        } else {
+            val q = query.lowercase()
+            allArticles.filter {
+                it.title.lowercase().contains(q) ||
+                it.description.lowercase().contains(q) ||
+                it.source.lowercase().contains(q)
+            }
+        }
+        adapter.submitList(filtered)
+        emptyState.visibility = if (filtered.isEmpty() && allArticles.isNotEmpty()) {
+            View.VISIBLE
+        } else if (filtered.isEmpty() && allArticles.isEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 
     private fun setupBottomNav() {
@@ -206,9 +239,15 @@ class DecoyActivity : AppCompatActivity() {
                 val articles = NewsDatabase.getInstance(this@DecoyActivity)
                     .newsDao().getAll()
                 withContext(Dispatchers.Main) {
-                    adapter.submitList(articles)
+                    allArticles = articles
+                    val query = searchBar.text.toString()
+                    if (query.isBlank()) {
+                        adapter.submitList(articles)
+                    } else {
+                        filterArticles(query)
+                    }
                     progressBar.visibility = View.GONE
-                    if (articles.isEmpty()) {
+                    if (allArticles.isEmpty()) {
                         emptyState.visibility = View.VISIBLE
                     } else {
                         emptyState.visibility = View.GONE
