@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/logoa"
-    android:gravity="center" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="10"
+        android:strokeLineCap="round"
+        android:pathData="M25.3,80.2
+            C25.3,46.4 46.4,25.3 80.2,25.3
+            M25.3,80.2
+            C25.3,61.2 40.1,46.4 59.1,46.4"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M25.3,80.2 m-5.1,0 a5.1,5.1 0,1,1 10.2,0 a5.1,5.1 0,1,1 -10.2,0"/>
+</vector>
