@@ -227,7 +227,7 @@ class DecoyActivity : AppCompatActivity() {
     private fun updateTimestamp() {
         val ts = RssSyncWorker.getLastFetchedTimestamp(this)
         if (ts > 0) {
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
             timestampText.text = "Updated ${sdf.format(Date(ts))}"
             timestampText.visibility = View.VISIBLE
         } else {

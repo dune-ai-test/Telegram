@@ -26,8 +26,8 @@ class RssSyncWorker(
             val result = RssFetcher.fetch(feeds)
             val db = NewsDatabase.getInstance(applicationContext)
             runBlocking {
+                db.newsDao().clearAll()
                 db.newsDao().insertAll(result.articles)
-                db.newsDao().trimToLast30()
             }
 
             prefs.edit()
