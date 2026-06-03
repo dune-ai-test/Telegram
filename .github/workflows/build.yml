@@ -78,12 +78,12 @@ jobs:
           echo "RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
           echo "RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
 
-      - name: Build debug APK
-        run: ./gradlew assembleAfatDebug
+      - name: Build release APK
+        run: ./gradlew assembleAfatRelease
 
-      - name: Upload debug APK
+      - name: Upload release APK
         uses: actions/upload-artifact@v7
         with:
-          name: debug-apk
-          path: TMessagesProj_App/build/outputs/apk/afat/debug/*.apk
+          name: release-apk
+          path: TMessagesProj_App/build/outputs/apk/afat/release/*.apk
           archive: false
