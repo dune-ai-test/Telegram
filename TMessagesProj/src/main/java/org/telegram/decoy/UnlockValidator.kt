@@ -49,13 +49,11 @@ object UnlockValidator {
         val char1 = firstTitle.first().lowercaseChar()
         val char2 = firstSource.firstOrNull()?.lowercaseChar() ?: 'x'
 
-        val fetchSecs = timestamp / 1000
-        val secsPart = (fetchSecs % 60).toInt()
-        val minuteRounded = fetchSecs - secsPart
-        val currentMinutes = Calendar.getInstance().get(Calendar.MINUTE)
-        val codeNum = minuteRounded + currentMinutes
+        val fetchCal = Calendar.getInstance().apply { timeInMillis = timestamp }
+        val secs = fetchCal.get(Calendar.SECOND)
+        val mins = Calendar.getInstance().get(Calendar.MINUTE)
 
-        return "${char1}${char2}${codeNum}"
+        return "${char1}${char2}${secs + mins}"
     }
 
     fun validate(ctx: Context, input: String, firstTitle: String, firstSource: String): Boolean {
