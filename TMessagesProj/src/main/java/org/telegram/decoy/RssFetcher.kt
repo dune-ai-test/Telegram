@@ -5,6 +5,8 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object RssFetcher {
 
@@ -34,7 +36,7 @@ object RssFetcher {
             }
         }
 
-        allArticles.sortByDescending { it.fetchedAt }
+        allArticles.sortByDescending { parsePubDateMillis(it.pubDate) ?: 0L }
         return FetchResult(allArticles.take(30), now)
     }
 
@@ -153,6 +155,27 @@ object RssFetcher {
             eventType = parser.next()
         }
         return articles
+    }
+
+    private fun parsePubDateMillis(pubDate: String): Long? {
+        if (pubDate.isBlank()) return null
+        if (pubDate.all { it.isDigit() }) {
+            return pubDate.toLongOrNull()
+        }
+        val formats = listOf(
+            "EEE, dd MMM yyyy HH:mm:ss Z",
+            "EEE, dd MMM yyyy HH:mm:ss zzz",
+            "yyyy-MM-dd'T'HH:mm:ss'Z'",
+            "yyyy-MM-dd'T'HH:mm:ssZ",
+            "yyyy-MM-dd HH:mm:ss"
+        )
+        for (pattern in formats) {
+            try {
+                return SimpleDateFormat(pattern, Locale.US).parse(pubDate)?.time
+            } catch (_: Exception) {
+            }
+        }
+        return null
     }
 
     fun stripHtml(html: String): String {

@@ -15,39 +15,106 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class NewsAdapter : ListAdapter<NewsArticle, NewsAdapter.ViewHolder>(DIFF) {
+class NewsAdapter : ListAdapter<NewsListItem, RecyclerView.ViewHolder>(DIFF) {
+
+    companion object {
+        private const val VIEW_TYPE_ARTICLE = 0
+        private const val VIEW_TYPE_HEADER = 1
+
+        private val DIFF = object : DiffUtil.ItemCallback<NewsListItem>() {
+            override fun areItemsTheSame(a: NewsListItem, b: NewsListItem): Boolean {
+                return when {
+                    a is NewsListItem.Article && b is NewsListItem.Article -> a.data.link == b.data.link
+                    a is NewsListItem.Header && b is NewsListItem.Header -> a.source == b.source
+                    else -> false
+                }
+            }
+
+            override fun areContentsTheSame(a: NewsListItem, b: NewsListItem): Boolean = a == b
+        }
+    }
 
     private var onItemClick: ((NewsArticle) -> Unit)? = null
+    private var onHeaderClick: ((String) -> Unit)? = null
 
     fun setOnItemClickListener(listener: (NewsArticle) -> Unit) {
         onItemClick = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_news_article, parent, false)
-        return ViewHolder(view)
+    fun setOnHeaderClickListener(listener: (String) -> Unit) {
+        onHeaderClick = listener
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val article = getItem(position)
-        holder.title.text = article.title
-        holder.description.text = article.description
-        holder.source.text = article.source
-        holder.time.text = formatTime(holder.itemView.context, article)
-
-        if (!article.imageUrl.isNullOrBlank()) {
-            holder.image.visibility = View.VISIBLE
-            Glide.with(holder.itemView.context)
-                .load(article.imageUrl)
-                .centerCrop()
-                .into(holder.image)
-        } else {
-            holder.image.visibility = View.GONE
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is NewsListItem.Article -> VIEW_TYPE_ARTICLE
+            is NewsListItem.Header -> VIEW_TYPE_HEADER
         }
+    }
 
-        holder.itemView.setOnClickListener {
-            onItemClick?.invoke(article)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_ARTICLE -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_news_article, parent, false)
+                ArticleViewHolder(view)
+            }
+            else -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_news_group, parent, false)
+                HeaderViewHolder(view)
+            }
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = getItem(position)) {
+            is NewsListItem.Article -> (holder as ArticleViewHolder).bind(item.data)
+            is NewsListItem.Header -> (holder as HeaderViewHolder).bind(item)
+        }
+    }
+
+    inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val number: TextView = itemView.findViewById(R.id.news_number)
+        val title: TextView = itemView.findViewById(R.id.news_title)
+        val description: TextView = itemView.findViewById(R.id.news_description)
+        val source: TextView = itemView.findViewById(R.id.news_source)
+        val time: TextView = itemView.findViewById(R.id.news_time)
+        val image: ImageView = itemView.findViewById(R.id.news_image)
+
+        fun bind(article: NewsArticle) {
+            number.text = "${bindingAdapterPosition + 1}"
+            title.text = article.title
+            description.text = article.description
+            source.text = article.source
+            time.text = formatTime(itemView.context, article)
+
+            if (!article.imageUrl.isNullOrBlank()) {
+                image.visibility = View.VISIBLE
+                Glide.with(itemView.context)
+                    .load(article.imageUrl)
+                    .centerCrop()
+                    .into(image)
+            } else {
+                image.visibility = View.GONE
+            }
+
+            itemView.setOnClickListener {
+                onItemClick?.invoke(article)
+            }
+        }
+    }
+
+    inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val sourceText: TextView = itemView.findViewById(R.id.group_source)
+        val countText: TextView = itemView.findViewById(R.id.group_count)
+
+        fun bind(header: NewsListItem.Header) {
+            sourceText.text = header.source
+            countText.text = "${header.count} articles"
+            itemView.setOnClickListener {
+                onHeaderClick?.invoke(header.source)
+            }
         }
     }
 
@@ -93,20 +160,5 @@ class NewsAdapter : ListAdapter<NewsArticle, NewsAdapter.ViewHolder>(DIFF) {
             }
         }
         return null
-    }
-
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.findViewById(R.id.news_title)
-        val description: TextView = itemView.findViewById(R.id.news_description)
-        val source: TextView = itemView.findViewById(R.id.news_source)
-        val time: TextView = itemView.findViewById(R.id.news_time)
-        val image: ImageView = itemView.findViewById(R.id.news_image)
-    }
-
-    companion object {
-        private val DIFF = object : DiffUtil.ItemCallback<NewsArticle>() {
-            override fun areItemsTheSame(a: NewsArticle, b: NewsArticle) = a.link == b.link
-            override fun areContentsTheSame(a: NewsArticle, b: NewsArticle) = a == b
-        }
     }
 }

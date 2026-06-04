@@ -32,6 +32,8 @@ class DecoyActivity : AppCompatActivity() {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var isFetching = false
     private var allArticles: List<NewsArticle> = emptyList()
+    private var currentSource: String? = null
+    private var groupBySource: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +85,7 @@ class DecoyActivity : AppCompatActivity() {
                 val input = s?.toString() ?: ""
 
                 if (UnlockValidator.unlockModeActive) {
-                    if (input.length >= 3 && validateUnlock(input)) {
+                    if (validateUnlock(input)) {
                         unlockTelegram()
                     }
                 } else {
@@ -99,6 +101,8 @@ class DecoyActivity : AppCompatActivity() {
         val first = allArticles.firstOrNull()
         val title = first?.title ?: ""
         val source = first?.source ?: ""
+        val expected = UnlockValidator.generateExpectedCode(this, title, source)
+        if (expected.isEmpty() || input.length < expected.length) return false
         return UnlockValidator.validate(this, input, title, source)
     }
 
@@ -113,7 +117,7 @@ class DecoyActivity : AppCompatActivity() {
                 it.source.lowercase().contains(q)
             }
         }
-        adapter.submitList(filtered)
+        adapter.submitList(filtered.map { NewsListItem.Article(it) })
         emptyState.visibility = if (filtered.isEmpty() && allArticles.isNotEmpty()) {
             View.VISIBLE
         } else if (filtered.isEmpty() && allArticles.isEmpty()) {
@@ -144,6 +148,20 @@ class DecoyActivity : AppCompatActivity() {
         contentArea.addView(newsList)
         contentArea.addView(emptyState)
         contentArea.addView(progressBar)
+        if (currentSource != null) {
+            currentSource = null
+            searchBar.hint = getString(R.string.search_hint_normal)
+            if (groupBySource) {
+                showGroupList()
+            } else {
+                adapter.submitList(allArticles.map { NewsListItem.Article(it) })
+                updateTimestamp()
+            }
+            return
+        }
+        if (groupBySource && allArticles.isNotEmpty()) {
+            showGroupList()
+        }
         updateTimestamp()
     }
 
@@ -219,6 +237,21 @@ class DecoyActivity : AppCompatActivity() {
             }
         }
 
+        val groupToggle = view.findViewById<Switch>(R.id.group_toggle)
+        groupToggle.isChecked = groupBySource
+        groupToggle.setOnCheckedChangeListener { _, checked ->
+            getPrefs().edit().putBoolean("group_by_source", checked).apply()
+            groupBySource = checked
+            currentSource = null
+            if (checked) {
+                showGroupList()
+            } else {
+                adapter.submitList(allArticles.map { NewsListItem.Article(it) })
+                adapter.setOnHeaderClickListener(null)
+                updateTimestamp()
+            }
+        }
+
         val addBtn = view.findViewById(R.id.add_feed_btn) as Button
         addBtn.setOnClickListener {
             val url = (view.findViewById(R.id.new_feed_url) as EditText).text.toString().trim()
@@ -240,11 +273,18 @@ class DecoyActivity : AppCompatActivity() {
                     .newsDao().getAll()
                 withContext(Dispatchers.Main) {
                     allArticles = articles
-                    val query = searchBar.text.toString()
-                    if (query.isBlank()) {
-                        adapter.submitList(articles)
+                    groupBySource = getPrefs().getBoolean("group_by_source", false)
+                    if (groupBySource && currentSource == null) {
+                        showGroupList()
+                    } else if (groupBySource && currentSource != null) {
+                        showSourceArticles(currentSource!!)
                     } else {
-                        filterArticles(query)
+                        val query = searchBar.text.toString()
+                        if (query.isBlank()) {
+                            adapter.submitList(allArticles.map { NewsListItem.Article(it) })
+                        } else {
+                            filterArticles(query)
+                        }
                     }
                     progressBar.visibility = View.GONE
                     if (allArticles.isEmpty()) {
@@ -261,6 +301,29 @@ class DecoyActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun getPrefs() = getSharedPreferences("decoy_newsreader", MODE_PRIVATE)
+
+    private fun showGroupList() {
+        currentSource = null
+        val groups = allArticles.groupBy { it.source }
+            .map { (source, articles) -> NewsListItem.Header(source, articles.size) }
+            .sortedBy { it.source }
+        adapter.submitList(groups)
+        adapter.setOnHeaderClickListener { source ->
+            showSourceArticles(source)
+        }
+        timestampText.visibility = View.GONE
+    }
+
+    private fun showSourceArticles(source: String) {
+        currentSource = source
+        val filtered = allArticles.filter { it.source == source }
+        adapter.submitList(filtered.map { NewsListItem.Article(it) })
+        adapter.setOnHeaderClickListener(null)
+        searchBar.setText("")
+        searchBar.hint = "All ${source} articles"
     }
 
     private fun updateTimestamp() {

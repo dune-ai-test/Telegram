@@ -12,6 +12,7 @@
     <string name="rss_feeds">RSS Feeds</string>
     <string name="add_rss_hint">Add RSS URL...</string>
     <string name="add">Add</string>
+    <string name="group_by_source">Group by source</string>
     <string name="about">About</string>
     <string name="about_text">NewsReader v1.0\nYour daily news curated from trusted sources.</string>
     <string name="nav_news">News</string>
