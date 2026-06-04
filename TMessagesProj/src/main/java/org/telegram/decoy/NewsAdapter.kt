@@ -41,7 +41,7 @@ class NewsAdapter : ListAdapter<NewsListItem, RecyclerView.ViewHolder>(DIFF) {
         onItemClick = listener
     }
 
-    fun setOnHeaderClickListener(listener: (String) -> Unit) {
+    fun setOnHeaderClickListener(listener: ((String) -> Unit)?) {
         onHeaderClick = listener
     }
 
@@ -83,7 +83,7 @@ class NewsAdapter : ListAdapter<NewsListItem, RecyclerView.ViewHolder>(DIFF) {
         val image: ImageView = itemView.findViewById(R.id.news_image)
 
         fun bind(article: NewsArticle) {
-            number.text = "${bindingAdapterPosition + 1}"
+            number.text = "${layoutPosition + 1}"
             title.text = article.title
             description.text = article.description
             source.text = article.source
