@@ -24,20 +24,46 @@ object RssFetcher {
     )
 
     fun fetch(feedUrls: List<String>): FetchResult {
-        val allArticles = mutableListOf<NewsArticle>()
         val now = System.currentTimeMillis()
+        val perFeed = mutableListOf<List<NewsArticle>>()
 
         for (url in feedUrls) {
             try {
                 val xml = downloadXml(url)
                 val articles = parseRss(xml, url)
-                allArticles.addAll(articles)
+                    .sortedByDescending { parsePubDateMillis(it.pubDate) ?: 0L }
+                perFeed.add(articles)
             } catch (_: Exception) {
             }
         }
 
-        allArticles.sortByDescending { parsePubDateMillis(it.pubDate) ?: 0L }
-        return FetchResult(allArticles.take(30), now)
+        if (perFeed.isEmpty()) return FetchResult(emptyList(), now)
+        if (perFeed.size == 1) return FetchResult(perFeed[0].take(30), now)
+
+        val total = 30
+        val share = total / perFeed.size
+        val remainder = total % perFeed.size
+
+        val result = mutableListOf<NewsArticle>()
+        val indices = IntArray(perFeed.size)
+
+        while (result.size < total) {
+            var takenThisRound = false
+            for (i in perFeed.indices) {
+                val maxFromFeed = share + (if (i < remainder) 1 else 0)
+                val alreadyTaken = indices[i]
+                if (alreadyTaken >= maxFromFeed) continue
+                val feedArticleCount = perFeed[i].size
+                if (alreadyTaken >= feedArticleCount) continue
+                result.add(perFeed[i][alreadyTaken])
+                indices[i]++
+                takenThisRound = true
+                if (result.size >= total) break
+            }
+            if (!takenThisRound) break
+        }
+
+        return FetchResult(result, now)
     }
 
     private fun downloadXml(urlString: String): String {

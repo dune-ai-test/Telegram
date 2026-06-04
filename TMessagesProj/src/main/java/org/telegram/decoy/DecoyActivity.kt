@@ -7,11 +7,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -22,18 +22,19 @@ class DecoyActivity : AppCompatActivity() {
     private lateinit var newsList: RecyclerView
     private lateinit var adapter: NewsAdapter
     private lateinit var searchBar: EditText
-    private lateinit var bottomNav: BottomNavigationView
     private lateinit var timestampText: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var contentArea: FrameLayout
     private lateinit var emptyState: View
-    private lateinit var refreshButton: View
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var settingsButton: View
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var isFetching = false
     private var allArticles: List<NewsArticle> = emptyList()
     private var currentSource: String? = null
     private var groupBySource: Boolean = false
+    private var showingSettings = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,27 +42,25 @@ class DecoyActivity : AppCompatActivity() {
 
         newsList = findViewById(R.id.news_list)
         searchBar = findViewById(R.id.search_bar)
-        bottomNav = findViewById(R.id.bottom_nav)
         timestampText = findViewById(R.id.timestamp_text)
         progressBar = findViewById(R.id.progress_bar)
         contentArea = findViewById(R.id.content_area)
         emptyState = findViewById(R.id.empty_state)
-        refreshButton = findViewById(R.id.refresh_button)
+        swipeRefresh = findViewById(R.id.swipe_refresh)
+        settingsButton = findViewById(R.id.settings_button)
 
         adapter = NewsAdapter()
         newsList.layoutManager = LinearLayoutManager(this)
         newsList.adapter = adapter
 
         setupSearch()
-        setupBottomNav()
         setupTitleTap()
-        setupRefreshButton()
         setupArticleClicks()
+        setupSwipeRefresh()
+        setupSettingsButton()
 
-        // Load whatever is in the DB
         loadNews()
 
-        // Schedule periodic background RSS sync
         RssSyncWorker.scheduleSync(this)
     }
 
@@ -127,91 +126,29 @@ class DecoyActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupBottomNav() {
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_news -> {
-                    showNewsList()
-                    true
-                }
-                R.id.nav_settings -> {
-                    showSettings()
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
-    private fun showNewsList() {
-        contentArea.removeAllViews()
-        contentArea.addView(newsList)
-        contentArea.addView(emptyState)
-        contentArea.addView(progressBar)
-        if (currentSource != null) {
-            currentSource = null
-            searchBar.hint = getString(R.string.search_hint_normal)
-            if (groupBySource) {
-                showGroupList()
-            } else {
-                adapter.submitList(allArticles.map { NewsListItem.Article(it) })
-                updateTimestamp()
-            }
-            return
-        }
-        if (groupBySource && allArticles.isNotEmpty()) {
-            showGroupList()
-        }
-        updateTimestamp()
-    }
-
-    private fun setupRefreshButton() {
-        refreshButton.setOnClickListener {
+    private fun setupSwipeRefresh() {
+        swipeRefresh.setOnRefreshListener {
             triggerRefresh()
         }
+        swipeRefresh.setColorSchemeResources(R.color.newsreader_colorPrimary)
     }
 
-    private fun setupArticleClicks() {
-        adapter.setOnItemClickListener { article ->
-            openArticle(article)
-        }
-    }
-
-    private fun openArticle(article: NewsArticle) {
-        val intent = Intent(this, ArticleReaderActivity::class.java).apply {
-            putExtra(ArticleReaderActivity.EXTRA_LINK, article.link)
-            putExtra(ArticleReaderActivity.EXTRA_TITLE, article.title)
-            putExtra(ArticleReaderActivity.EXTRA_SOURCE, article.source)
-            putExtra(ArticleReaderActivity.EXTRA_PUB_DATE, article.pubDate)
-            putExtra(ArticleReaderActivity.EXTRA_IMAGE_URL, article.imageUrl)
-            putExtra(ArticleReaderActivity.EXTRA_CONTENT, article.content)
-            putExtra(ArticleReaderActivity.EXTRA_DESCRIPTION, article.description)
-        }
-        startActivity(intent)
-    }
-
-    private fun triggerRefresh() {
-        if (isFetching) return
-        isFetching = true
-        progressBar.visibility = View.VISIBLE
-        emptyState.visibility = View.GONE
-        timestampText.text = getString(R.string.refreshing)
-        timestampText.visibility = View.VISIBLE
-
-        RssSyncWorker.runOnce(this)
-
-        // Reload from DB after a short delay so the user sees the new articles
-        scope.launch {
-            delay(3500)
-            loadNews(silent = true)
-            isFetching = false
+    private fun setupSettingsButton() {
+        settingsButton.setOnClickListener {
+            if (showingSettings) {
+                showNewsList()
+            } else {
+                showSettings()
+            }
         }
     }
 
     private fun showSettings() {
+        showingSettings = true
         contentArea.removeAllViews()
         val view = layoutInflater.inflate(R.layout.fragment_settings, contentArea, false)
         contentArea.addView(view)
+        swipeRefresh.visibility = View.GONE
 
         val rssList = view.findViewById(R.id.rss_list) as LinearLayout
         rssList.removeAllViews()
@@ -260,6 +197,70 @@ class DecoyActivity : AppCompatActivity() {
                 showSettings()
             }
         }
+    }
+
+    private fun setupArticleClicks() {
+        adapter.setOnItemClickListener { article ->
+            openArticle(article)
+        }
+        adapter.setOnHeaderClickListener { source ->
+            showSourceArticles(source)
+        }
+    }
+
+    private fun openArticle(article: NewsArticle) {
+        val intent = Intent(this, ArticleReaderActivity::class.java).apply {
+            putExtra(ArticleReaderActivity.EXTRA_LINK, article.link)
+            putExtra(ArticleReaderActivity.EXTRA_TITLE, article.title)
+            putExtra(ArticleReaderActivity.EXTRA_SOURCE, article.source)
+            putExtra(ArticleReaderActivity.EXTRA_PUB_DATE, article.pubDate)
+            putExtra(ArticleReaderActivity.EXTRA_IMAGE_URL, article.imageUrl)
+            putExtra(ArticleReaderActivity.EXTRA_CONTENT, article.content)
+            putExtra(ArticleReaderActivity.EXTRA_DESCRIPTION, article.description)
+        }
+        startActivity(intent)
+    }
+
+    private fun triggerRefresh() {
+        if (isFetching) return
+        isFetching = true
+        progressBar.visibility = View.VISIBLE
+        emptyState.visibility = View.GONE
+        timestampText.text = getString(R.string.refreshing)
+        timestampText.visibility = View.VISIBLE
+
+        RssSyncWorker.runOnce(this)
+
+        scope.launch {
+            delay(3500)
+            loadNews(silent = true)
+            isFetching = false
+            swipeRefresh.isRefreshing = false
+        }
+    }
+
+    private fun showNewsList() {
+        showingSettings = false
+        contentArea.removeAllViews()
+        contentArea.addView(swipeRefresh)
+        contentArea.addView(emptyState)
+        contentArea.addView(progressBar)
+        swipeRefresh.visibility = View.VISIBLE
+        if (currentSource != null) {
+            currentSource = null
+            searchBar.hint = getString(R.string.search_hint_normal)
+            if (groupBySource) {
+                showGroupList()
+            } else {
+                adapter.submitList(allArticles.map { NewsListItem.Article(it) })
+                updateTimestamp()
+            }
+            return
+        }
+        if (groupBySource && allArticles.isNotEmpty()) {
+            showGroupList()
+        }
+        updateTimestamp()
     }
 
     private fun loadNews(silent: Boolean = false) {

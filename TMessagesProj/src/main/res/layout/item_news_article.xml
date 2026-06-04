@@ -10,46 +10,44 @@
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
-    <ImageView
-        android:id="@+id/news_image"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:scaleType="centerCrop"
-        android:background="@color/newsreader_bgSurface"
-        android:visibility="gone"
-        android:layout_marginBottom="12dp"
-        android:clipToOutline="true" />
+        android:layout_marginBottom="12dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/news_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@color/newsreader_bgSurface"
+            android:visibility="gone"
+            android:clipToOutline="true" />
 
         <TextView
             android:id="@+id/news_number"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:gravity="center"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:textStyle="bold"
-            android:textColor="@color/newsreader_colorPrimary"
-            android:background="@drawable/news_item_bg"
-            android:layout_marginEnd="10dp" />
+            android:textColor="@android:color/white"
+            android:background="@drawable/number_badge"
+            android:layout_margin="6dp"
+            android:layout_gravity="top|end" />
 
-        <TextView
-            android:id="@+id/news_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:textColor="@color/newsreader_textPrimary"
-            android:lineSpacingMultiplier="1.15"
-            android:maxLines="3"
-            android:ellipsize="end" />
+    </FrameLayout>
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/news_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="@color/newsreader_textPrimary"
+        android:lineSpacingMultiplier="1.15"
+        android:maxLines="3"
+        android:ellipsize="end" />
 
     <TextView
         android:id="@+id/news_description"

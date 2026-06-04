@@ -16,13 +16,6 @@
         android:clickable="true"
         android:focusable="true">
 
-        <ImageView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_rss"
-            android:contentDescription="Logo"
-            android:layout_marginEnd="12dp" />
-
         <TextView
             android:id="@+id/app_title"
             android:layout_width="0dp"
@@ -35,12 +28,12 @@
             android:letterSpacing="-0.01" />
 
         <ImageButton
-            android:id="@+id/refresh_button"
+            android:id="@+id/settings_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_refresh"
+            android:src="@drawable/ic_settings"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Refresh"
+            android:contentDescription="Settings"
             android:scaleType="centerInside"
             android:padding="8dp" />
 
@@ -71,13 +64,20 @@
         android:layout_weight="1"
         android:layout_marginTop="8dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/news_list"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="12dp" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/news_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingHorizontal="12dp"
+                android:paddingBottom="12dp" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <LinearLayout
             android:id="@+id/empty_state"
@@ -131,20 +131,5 @@
         android:textSize="11sp"
         android:textColor="@color/newsreader_textTertiary"
         android:visibility="gone" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/newsreader_divider" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/newsreader_bgHeader"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/nav_color"
-        app:itemTextColor="@color/nav_color"
-        app:elevation="0dp" />
 
 </LinearLayout>
